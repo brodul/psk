@@ -1,0 +1,107 @@
+\documentclass[12pt]{article}
+\usepackage[slovene]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{makeidx}
+\usepackage{pifont}
+\usepackage{listings}  
+\usepackage{hyperref}  
+\usepackage{graphicx}
+\usepackage[margin=0.8in]{geometry}
+\usepackage[xindy,toc,acronym]{glossaries}
+
+\let\stdsection\section
+\renewcommand\section{\newpage\stdsection}
+
+\title{Veriga prodajaln enoloncnic}
+\author{Andraž Brodnik, Domen Kožar}
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+
+\section{Uvod}
+
+\\*
+
+Resevali bomo problem prodajaln enoloncnic. 
+
+Torej imamo vec prodajaln enoloncnic na vecih lokacijah.
+
+Prodajamo enoloncnice (preprosta jed iz več vrst živil, pripravljena v enem loncu). Prodajalne imajo v ponudbi vec enoloncnic.
+
+\subsection{Lokacija}
+
+Lokacija je lokacija primerna za prodajalno enoloncnic. Ena prodajalna je lahko na eni lokaciji. 
+Ni pa nijno, da je lokacija zasedena z prodajalno.
+
+Lokacija ima postno stevilko, ulico, hisno stevilko.
+
+\subsection{Prodajalna}
+
+Prodajalna je na neki lokaciji. V svoji ponudbi ima enoloncnice. V ponudbi je vec enoloncnic, ni pa nujno, da so na voljo vse, ki jih zna nasa druzba skuhati.
+
+Prodajalna ima ime.
+
+\subsection{Enoloncnice}
+
+Enoloncnice so sestavljene iz vec sestavin. Ter imajo ime in ceno, ki je enaka za vse prodajalne.
+
+
+\subsection{Sestavine}
+
+Sestavine so del enoloncnice, imajo ime ter svojega dobavitelja. Dobavitelj je lahko samo eno podjetje.
+
+\subsection{Dobavitelji}
+
+Dobavitelji so podjetja z imenom. En dobavitelj lahko dobavlja vec sestavin.
+
+\subsection{Stranke}
+
+Stranke lahko narocajo enoloncnice, preko narocila.
+Imajo ime in priimek.
+
+\subsection{Narocila}
+
+Stranke izdajo narocilo. V narocilu je lahko vec razlicnih enoloncnic. Prav tako lahko stranak naroci vec enoloncnic istega tipa/  
+
+\section{Klasicne diagramske tehnike}
+
+\subsection{Entitetni diagram}
+
+Done.
+
+\subsection{Funkcijska dekompozicija}
+
+Done 
+
+\subsection{Procesni diagram}
+
+Missing
+
+\subsection{Diagram toka podatkov}
+
+Missing
+
+\section{UML}
+
+\subsection{Diagram primerov uporabe}
+
+Done
+
+\subsection{Diagram zaporedja ali sodelovanja}
+
+Missing
+
+\subsection{Diagram stanj}
+
+Missing
+
+\subsection{Diagram aktivnosti}
+
+Missing
+
+\section{SQL}
+
+
