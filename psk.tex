@@ -204,5 +204,83 @@ jo pogrejemo preide v stanje pogreta, ko jo stranka plača, ji lahko izdamo.
 
 \section{SQL}
 
+Vse enolončnice, ki imajo enako ceno kot pasulj enolončnica:
+
+\begin{verbatim}
+SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime, enoloncnica.cena AS enoloncnica_cena 
+FROM enoloncnica 
+WHERE enoloncnica.cena IN (SELECT enoloncnica.cena 
+    FROM enoloncnica 
+    WHERE enoloncnica.ime = 'pasulj')
+\end{verbatim}
+
+Vse enolončnice, ki jih v zadnjem tednu ni nihče naročil:
+
+\begin{verbatim}
+SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime, enoloncnica.cena AS enoloncnica_cena 
+FROM enoloncnica
+LEFT OUTER JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1 ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
+LEFT OUTER JOIN narocilo ON narocilo.id = narocilo_enoloncnica_1.narocilo 
+WHERE NOT (EXISTS (SELECT 1 
+    FROM narocilo_enoloncnica, narocilo 
+    WHERE enoloncnica.id = narocilo_enoloncnica.enoloncnica AND narocilo.id = narocilo_enoloncnica.narocilo AND narocilo.datum > '2013-02-01 00:00:00.000000'))
+\end{verbatim}
+
+Vse enolončnice, ki so se v zadnjih 10 dneh prodale v Ziga Zaga d.o.o.
+
+\begin{verbatim}
+SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime, enoloncnica.cena AS enoloncnica_cena 
+FROM enoloncnica
+JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1 ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
+JOIN narocilo ON narocilo.id = narocilo_enoloncnica_1.narocilo
+JOIN poslovalnica ON poslovalnica.id = narocilo.poslovalnica 
+WHERE narocilo.datum > '2013-01-29 00:00:00.000000' AND poslovalnica.ime = 'Ziga Zaga d.o.o.'
+\end{verbatim}
+
+Vse enolončnice katerih Joze Zbogar v zadnjih 10 dneh ni kupil nobene
+
+\begin{verbatim}
+ SELECT id, ime FROM enoloncnica
+WHERE NOT id IN (
+    SELECT enoloncnica
+    FROM narocilo_enoloncnica AS na, narocilo AS n
+    WHERE na.narocilo = n.id AND n.stranka IN
+        (SELECT id FROM stranka WHERE ime='Joze' AND priimek='Zbogar'))
+\end{verbatim}
+    
+
+Vse enolončnice in za vsako število prodanih v zadnjem mesecu
+
+\begin{verbatim}
+SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime, enoloncnica.cena AS enoloncnica_cena, count(enoloncnica.id) AS count_1 
+FROM enoloncnica
+JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1 ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
+JOIN narocilo ON narocilo.id = narocilo_enoloncnica_1.narocilo 
+WHERE narocilo.datum > '2013-01-08 00:00:00.000000'
+GROUP BY enoloncnica.id, enoloncnica.ime, enoloncnica.cena
+\end{verbatim}
+
+Katere stranke v zadnjem mesecu niso naredile naročil
+
+\begin{verbatim}
+SELECT stranka.id AS stranka_id, stranka.ime AS stranka_ime, stranka.priimek AS stranka_priimek 
+FROM stranka, enoloncnica
+LEFT OUTER JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1 ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
+LEFT OUTER JOIN narocilo ON narocilo.id = narocilo_enoloncnica_1.narocilo 
+WHERE NOT (EXISTS (SELECT 1 
+    FROM narocilo 
+    WHERE stranka.id = narocilo.stranka AND narocilo.datum > '2013-01-08 00:00:00.000000'))
+\end{verbatim}
+
+Vse stranke, ki so v zadnjem mesecu naročile za več kot 10 eur enolončnic
+
+\begin{verbatim}
+SELECT s.ime, sum(e.cena)
+FROM stranka AS s, narocilo AS n, narocilo_enoloncnica AS na, enoloncnica AS e
+WHERE s.id = n.stranka AND n.id = na.narocilo AND na.enoloncnica = e.id AND n.datum > '2013-01-08 00:00:00.000000'
+GROUP BY s.id
+HAVING sum(e.cena) > 10
+\end{verbatim}
+    
 
 \end{document}
