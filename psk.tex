@@ -36,7 +36,7 @@ Prodajamo enolončnice (preprosta jed iz več vrst živil, pripravljena v enem l
 
 \subsection{Poslovalnica}
 
-Poslovalnica je prodajalna je na neki lokaciji. V svoji ponudbi ima enolončnice. V ponudbi je vec enoloncnic, ni pa nujno, da so na voljo vse, ki jih zna nasa družba skuhati.
+Poslovalnica je prodajalna je na neki lokaciji. V svoji ponudbi ima enolončnice. V ponudbi je več enoloncnič, ni pa nujno, da so na voljo vse, ki jih zna nasa družba skuhati.
 
 Prodajalna ima ime, ulico, hišno številko, poštno številko.
 
@@ -190,54 +190,63 @@ jo pogrejemo preide v stanje pogreta, ko jo stranka plača, ji lahko izdamo.
 
 \subsection{Diagram aktivnosti}
 
-%\begin{figure}[htb]
-%\begin{center}
-%\includegraphics[scale=0.5]{aktivnosti.png}
-%\end{center}
-%\caption{Diagram aktivnosti}
-%\label{aktivnosti}
-%\end{figure}
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[scale=0.5]{aktivnosti.jpeg}
+\end{center}
+\caption{Diagram aktivnosti}
+\label{aktivnosti}
+\end{figure}
 
+Diagrama nisva mogla na risati, ker je referenčni diagram izmaličen, kot se vidi zgoraj.
 
 
 \newpage
 
 \section{SQL}
 
-Vse enolončnice, ki imajo enako ceno kot pasulj enolončnica:
+\subsection{Vse enolončnice, ki imajo enako ceno kot pasulj enolončnica}
 
 \begin{verbatim}
-SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime, enoloncnica.cena AS enoloncnica_cena 
+SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime,
+       enoloncnica.cena AS enoloncnica_cena 
 FROM enoloncnica 
 WHERE enoloncnica.cena IN (SELECT enoloncnica.cena 
     FROM enoloncnica 
     WHERE enoloncnica.ime = 'pasulj')
 \end{verbatim}
 
-Vse enolončnice, ki jih v zadnjem tednu ni nihče naročil:
+\subsection{Vse enolončnice, ki jih v zadnjem tednu ni nihče naročil}
 
 \begin{verbatim}
-SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime, enoloncnica.cena AS enoloncnica_cena 
+SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime,
+       enoloncnica.cena AS enoloncnica_cena 
 FROM enoloncnica
-LEFT OUTER JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1 ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
+LEFT OUTER JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1
+    ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
 LEFT OUTER JOIN narocilo ON narocilo.id = narocilo_enoloncnica_1.narocilo 
 WHERE NOT (EXISTS (SELECT 1 
     FROM narocilo_enoloncnica, narocilo 
-    WHERE enoloncnica.id = narocilo_enoloncnica.enoloncnica AND narocilo.id = narocilo_enoloncnica.narocilo AND narocilo.datum > '2013-02-01 00:00:00.000000'))
+    WHERE enoloncnica.id = narocilo_enoloncnica.enoloncnica
+        AND narocilo.id = narocilo_enoloncnica.narocilo
+        AND narocilo.datum > '2013-02-01 00:00:00.000000'))
 \end{verbatim}
 
-Vse enolončnice, ki so se v zadnjih 10 dneh prodale v Ziga Zaga d.o.o.
+\subsection{Vse enolončnice, ki so se v zadnjih 10 dneh prodale v Ziga Zaga d.o.o.}
 
 \begin{verbatim}
-SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime, enoloncnica.cena AS enoloncnica_cena 
+SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime,
+       enoloncnica.cena AS enoloncnica_cena 
 FROM enoloncnica
-JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1 ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
+JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1
+    ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
 JOIN narocilo ON narocilo.id = narocilo_enoloncnica_1.narocilo
 JOIN poslovalnica ON poslovalnica.id = narocilo.poslovalnica 
-WHERE narocilo.datum > '2013-01-29 00:00:00.000000' AND poslovalnica.ime = 'Ziga Zaga d.o.o.'
+WHERE narocilo.datum > '2013-01-29 00:00:00.000000'
+    AND poslovalnica.ime = 'Ziga Zaga d.o.o.'
 \end{verbatim}
 
-Vse enolončnice katerih Joze Zbogar v zadnjih 10 dneh ni kupil nobene
+\subsection{Vse enolončnice katerih Joze Zbogar v zadnjih 10 dneh ni kupil nobene}
 
 \begin{verbatim}
  SELECT id, ime FROM enoloncnica
@@ -248,36 +257,43 @@ WHERE NOT id IN (
         (SELECT id FROM stranka WHERE ime='Joze' AND priimek='Zbogar'))
 \end{verbatim}
     
-
-Vse enolončnice in za vsako število prodanih v zadnjem mesecu
+\subsection{Vse enolončnice in za vsako število prodanih v zadnjem mesecu}
 
 \begin{verbatim}
-SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime, enoloncnica.cena AS enoloncnica_cena, count(enoloncnica.id) AS count_1 
+SELECT enoloncnica.id AS enoloncnica_id, enoloncnica.ime AS enoloncnica_ime,
+       enoloncnica.cena AS enoloncnica_cena, count(enoloncnica.id) AS count_1 
 FROM enoloncnica
-JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1 ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
+JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1
+    ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
 JOIN narocilo ON narocilo.id = narocilo_enoloncnica_1.narocilo 
 WHERE narocilo.datum > '2013-01-08 00:00:00.000000'
 GROUP BY enoloncnica.id, enoloncnica.ime, enoloncnica.cena
 \end{verbatim}
 
-Katere stranke v zadnjem mesecu niso naredile naročil
+\subsection{Katere stranke v zadnjem mesecu niso naredile naročil}
 
 \begin{verbatim}
 SELECT stranka.id AS stranka_id, stranka.ime AS stranka_ime, stranka.priimek AS stranka_priimek 
 FROM stranka, enoloncnica
-LEFT OUTER JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1 ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
-LEFT OUTER JOIN narocilo ON narocilo.id = narocilo_enoloncnica_1.narocilo 
+LEFT OUTER JOIN narocilo_enoloncnica AS narocilo_enoloncnica_1
+    ON enoloncnica.id = narocilo_enoloncnica_1.enoloncnica
+LEFT OUTER JOIN narocilo
+    ON narocilo.id = narocilo_enoloncnica_1.narocilo 
 WHERE NOT (EXISTS (SELECT 1 
     FROM narocilo 
-    WHERE stranka.id = narocilo.stranka AND narocilo.datum > '2013-01-08 00:00:00.000000'))
+    WHERE stranka.id = narocilo.stranka
+        AND narocilo.datum > '2013-01-08 00:00:00.000000'))
 \end{verbatim}
 
-Vse stranke, ki so v zadnjem mesecu naročile za več kot 10 eur enolončnic
+\subsection{Vse stranke, ki so v zadnjem mesecu naročile za več kot 10 eur enolončnic}
 
 \begin{verbatim}
 SELECT s.ime, sum(e.cena)
 FROM stranka AS s, narocilo AS n, narocilo_enoloncnica AS na, enoloncnica AS e
-WHERE s.id = n.stranka AND n.id = na.narocilo AND na.enoloncnica = e.id AND n.datum > '2013-01-08 00:00:00.000000'
+WHERE s.id = n.stranka
+    AND n.id = na.narocilo
+    AND na.enoloncnica = e.id
+    AND n.datum > '2013-01-08 00:00:00.000000'
 GROUP BY s.id
 HAVING sum(e.cena) > 10
 \end{verbatim}
