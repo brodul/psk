@@ -1,0 +1,10 @@
+bin/
+include/
+lib/
+local/
+
+# ignore latex files
+psk.aux
+psk.log
+psk.out
+psk.toc
